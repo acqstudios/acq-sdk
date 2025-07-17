@@ -1,6 +1,6 @@
 {
   "name": "acq-sdk",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "SDK oficial para a API da ACQ",
   "main": "dist/index.cjs",
