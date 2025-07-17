@@ -3,7 +3,7 @@
 // Script de verificação do SDK antes da publicação
 console.log("🔍 Verificando SDK ACQ...\n");
 
-import { AcqClient } from "../dist/index.js";
+import { AcqClient, AcqSocketClient } from "../dist/index.js";
 import fs from "fs";
 
 // Verificar se os arquivos essenciais existem
@@ -35,6 +35,13 @@ try {
     "✅ Serviços disponíveis:",
     Object.keys(testClient).filter(k => typeof testClient[k] === "object")
   );
+
+  // Verificar socket client
+  const testSocketClient = new AcqSocketClient({
+    apiKey: "test-key",
+    email: "test@example.com"
+  });
+  console.log("✅ Socket client pode ser importado e instanciado");
 } catch (error) {
   console.log("❌ Erro ao importar SDK:", error.message);
   process.exit(1);
@@ -61,8 +68,5 @@ for (const field of requiredFields) {
   }
 }
 
-console.log("\n🎉 Verificação concluída! SDK pronto para publicação.");
-console.log("\n📝 Próximos passos:");
-console.log("1. npm login");
-console.log("2. npm publish");
-console.log("3. Verificar em https://www.npmjs.com/package/" + pkg.name);
+console.log("\n🎉 Verificação concluída!");
+process.exit(0);

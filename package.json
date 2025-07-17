@@ -41,7 +41,11 @@
     "html",
     "image",
     "temporary-email",
-    "mail"
+    "mail",
+    "websocket",
+    "socket",
+    "real-time",
+    "notification"
   ],
   "author": "ACQ Team",
   "license": "MIT",
@@ -71,7 +75,9 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "axios": "^1.6.5"
+    "axios": "^1.6.5",
+    "socket.io": "4.8.1",
+    "socket.io-client": "4.8.1"
   },
   "engines": {
     "node": ">=16.0.0"
