@@ -4,7 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-SDK oficial em Node.js para a **API da ACQ**. Oferece funcionalidades para renderização de HTML em imagens e gerenciamento de emails temporários.
+SDK oficial em Node.js para a **API da ACQ**. Oferece funcionalidades para renderização de HTML em imagens, gerenciamento de emails temporários e monitoramento em tempo real via WebSocket.
 
 ## 📦 Instalação
 
@@ -26,6 +26,8 @@ pnpm add acq-sdk
 
 ## 🔑 Configuração
 
+### Cliente HTTP
+
 ```typescript
 import { AcqClient } from "acq-sdk";
 
@@ -33,6 +35,20 @@ const client = new AcqClient({
   apiKey: "sua-api-key-aqui",
   // Opcionais:
   baseUrl: "https://api.acq.lat", // URL base customizada
+  timeout: 30000, // Timeout em milissegundos
+});
+```
+
+### Cliente WebSocket
+
+```typescript
+import { AcqSocketClient, SocketEvents } from "acq-sdk";
+
+const socketClient = new AcqSocketClient({
+  apiKey: "sua-api-key-aqui",
+  email: "seu-email@acq.lat", // Email para monitorar
+  // Opcionais:
+  baseUrl: "wss://ws.acq.lat", // URL base customizada
   timeout: 30000, // Timeout em milissegundos
 });
 ```
@@ -85,6 +101,95 @@ console.log("Email deletado:", resultado.deleted_email);
 ```typescript
 const resultado = await client.mails.deleteMessages("email@acq.lat");
 console.log(`${resultado.deleted_count} mensagens deletadas`);
+```
+
+## 🔌 WebSocket - Monitoramento em Tempo Real
+
+### Conectar e ouvir eventos
+
+```typescript
+import { AcqSocketClient, SocketEvents } from "acq-sdk";
+
+const socketClient = new AcqSocketClient({
+  apiKey: "sua-api-key-aqui",
+  email: "seu-email@acq.lat",
+});
+
+// Conectar ao WebSocket
+await socketClient.connect();
+console.log("Conectado ao WebSocket!");
+
+// Ouvir novos emails
+socketClient.on(SocketEvents.NEW, data => {
+  console.log("Nova mensagem recebida:", data);
+  // data contém informações da nova mensagem
+});
+
+// Ouvir eventos de conexão
+socketClient.on(SocketEvents.CONNECT, () => {
+  console.log("WebSocket conectado!");
+});
+
+// Ouvir eventos de desconexão
+socketClient.on(SocketEvents.DISCONNECT, () => {
+  console.log("WebSocket desconectado!");
+});
+```
+
+### Gerenciar conexão
+
+```typescript
+// Conectar
+await socketClient.connect();
+
+// Desconectar quando necessário
+await socketClient.disconnect();
+```
+
+### Exemplo prático - Monitor de emails
+
+```typescript
+import { AcqClient, AcqSocketClient, SocketEvents } from "acq-sdk";
+
+async function monitorarEmail() {
+  const client = new AcqClient({
+    apiKey: "sua-api-key-aqui",
+  });
+
+  // Criar um novo email
+  const novoEmail = await client.mails.create();
+  console.log("Email criado:", novoEmail.mail);
+
+  // Conectar ao WebSocket para monitorar
+  const socketClient = new AcqSocketClient({
+    apiKey: "sua-api-key-aqui",
+    email: novoEmail.mail,
+  });
+
+  await socketClient.connect();
+
+  // Ouvir novos emails
+  socketClient.on(SocketEvents.NEW, mensagem => {
+    console.log("Nova mensagem:", {
+      from: mensagem.from,
+      subject: mensagem.subject,
+      body: mensagem.body,
+    });
+  });
+
+  console.log("Monitorando emails em tempo real...");
+
+  // Manter ativo por 5 minutos
+  setTimeout(
+    async () => {
+      await socketClient.disconnect();
+      console.log("Monitoramento finalizado");
+    },
+    5 * 60 * 1000
+  );
+}
+
+monitorarEmail().catch(console.error);
 ```
 
 ## 🎨 Renderização de HTML
@@ -153,6 +258,72 @@ try {
     console.error("Erro de configuração:", error.message);
   }
 }
+```
+
+### Erros específicos do WebSocket
+
+```typescript
+import { AcqSocketClient, SocketEvents } from "acq-sdk";
+
+const socketClient = new AcqSocketClient({
+  apiKey: "sua-api-key-aqui",
+  email: "seu-email@acq.lat",
+});
+
+try {
+  await socketClient.connect();
+} catch (error) {
+  console.error("Erro ao conectar WebSocket:", error);
+}
+
+// Ouvir erros de conexão
+socketClient.on("connect_error", error => {
+  console.error("Erro de conexão:", error);
+});
+```
+
+## 📚 Tipos e Interfaces
+
+### Tipos principais
+
+```typescript
+import type {
+  AcqClientConfig,
+  AcqSocketConfig,
+  EmailInfo,
+  EmailMessage,
+  MailboxResponse,
+  CreateEmailResponse,
+  DeleteEmailResponse,
+  DeleteMessagesResponse,
+  RenderOptions,
+  CreateEmailOptions,
+  GetMessagesOptions,
+  AcqSocket,
+  SocketEvents,
+} from "acq-sdk";
+
+// Configuração do cliente HTTP
+const config: AcqClientConfig = {
+  apiKey: "sua-chave",
+  baseUrl: "https://api.acq.lat", // opcional
+  timeout: 30000, // opcional
+};
+
+// Configuração do cliente WebSocket
+const socketConfig: AcqSocketConfig = {
+  apiKey: "sua-chave",
+  email: "email@acq.lat",
+  baseUrl: "wss://ws.acq.lat", // opcional
+  timeout: 30000, // opcional
+};
+
+// Eventos disponíveis
+const eventos = {
+  CONNECT: SocketEvents.CONNECT,
+  DISCONNECT: SocketEvents.DISCONNECT,
+  NEW: SocketEvents.NEW,
+};
 ```
 
 ## 📄 Licença

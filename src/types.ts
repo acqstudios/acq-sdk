@@ -131,3 +131,17 @@ export interface GetMessagesOptions {
   /** Email para consultar mensagens */
   mail: string;
 }
+
+/**
+ * Configuração do cliente de socket
+ */
+export interface AcqSocketConfig {
+  /** Token de autorização */
+  apiKey: string;
+  /** E-mail */
+  email: string;
+  /** URL base do socket (opcional) */
+  baseUrl?: string;
+  /** Timeout das requisições em ms (padrão: 30000) */
+  timeout?: number;
+}
