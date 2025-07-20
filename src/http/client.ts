@@ -19,7 +19,7 @@ export class HttpClient {
       headers: {
         Authorization: `Bearer ${config.apiKey}`,
         "Content-Type": "application/json",
-        "User-Agent": "acq-sdk/1.1.0",
+        "User-Agent": "acq-sdk/1.2.0",
       },
     });
 

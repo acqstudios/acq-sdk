@@ -46,8 +46,9 @@ import { AcqSocketClient, SocketEvents } from "acq-sdk";
 
 const socketClient = new AcqSocketClient({
   apiKey: "sua-api-key-aqui",
-  email: "seu-email@acq.lat", // Email para monitorar
   // Opcionais:
+  email: "seu-email@acq.lat", // Email para monitorar, se não informado, todos os emails serão monitorados.
+  // email: ["email1@acq.lat", "email2@acq.lat"] para monitorar múltiplos emails
   baseUrl: "wss://ws.acq.lat", // URL base customizada
   timeout: 30000, // Timeout em milissegundos
 });

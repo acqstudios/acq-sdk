@@ -16,10 +16,6 @@ export class AcqSocketClient implements AcqSocket {
       throw new AcqConfigError("API key é obrigatória");
     }
 
-    if (!config.email || config.email.trim() === "") {
-      throw new AcqConfigError("Email é obrigatório");
-    }
-
     this.config = config;
     this.socket = io(
       (this.config.baseUrl || "wss://ws.acq.lat").replace(/\/+$/, ""),
@@ -29,7 +25,7 @@ export class AcqSocketClient implements AcqSocket {
         auth: {
           authorization: this.config.apiKey,
         },
-        query: { email: this.config.email },
+        query: { email: this.config.email || "" },
         timeout: this.config.timeout || 30000,
       }
     );
