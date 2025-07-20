@@ -1,6 +1,6 @@
 {
   "name": "acq-sdk",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
   "description": "SDK oficial para a API da ACQ",
   "main": "dist/index.cjs",
@@ -76,7 +76,6 @@
   },
   "dependencies": {
     "axios": "^1.6.5",
-    "socket.io": "4.8.1",
     "socket.io-client": "4.8.1"
   },
   "engines": {
