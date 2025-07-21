@@ -33,10 +33,10 @@ describe("AcqSocketClient", () => {
     }).toThrow(AcqConfigError);
   });
 
-  it("should throw error without email", () => {
-    expect(() => {
-      new AcqSocketClient({ apiKey: "test-key", email: "" });
-    }).toThrow(AcqConfigError);
+  it("should work without email (optional)", () => {
+    const client = new AcqSocketClient({ apiKey: "test-key" });
+    expect(client).toBeInstanceOf(AcqSocketClient);
+    expect(client.config.email).toBeUndefined();
   });
 
   it("should use custom base URL when provided", () => {

@@ -138,8 +138,8 @@ export interface GetMessagesOptions {
 export interface AcqSocketConfig {
   /** Token de autorização */
   apiKey: string;
-  /** E-mail */
-  email: string;
+  /** E-mail (opcional) */
+  email?: string;
   /** URL base do socket (opcional) */
   baseUrl?: string;
   /** Timeout das requisições em ms (padrão: 30000) */
